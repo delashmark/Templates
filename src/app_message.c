@@ -48,26 +48,15 @@ static void timer_callback(void *data) {
 
 // Called when a message is received from PebbleKitJS
 void in_received_handler(DictionaryIterator *received, void *context) {
-	Tuple *tuple;
+	int STATUS = (int)dict_find(received, STATUS_KEY)->value->uint32;
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "Received Status: %d", STATUS);
+	char* MSG = dict_find(received, MESSAGE_KEY)->value->cstring;
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "Received Message: %s", MSG);
 	
-	int STATUS = 0;	
+	if (STATUS === 0) ;
+	else if (STATUS == 1) ;
 	
-	tuple = dict_find(received, STATUS_KEY);
-	if (tuple) {
-		STATUS = (int)tuple->value->uint32;
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "Received Status: %d", STATUS);
-	}
-	
-	tuple = dict_find(received, MESSAGE_KEY);
-	if (tuple) {
-		outString = tuple->value->cstring;
-		if (STATUS < 1) {
-			HEADER_TEXT = outString;
-			outString = "";
-		}
-		update_text();
-	}
-	//APP_LOG(APP_LOG_LEVEL_DEBUG, "Received Message: %s", tuple->value->cstring);
+	//update_text();
 }
 
 // Called when an incoming message from PebbleKitJS is dropped
@@ -121,14 +110,7 @@ void window_load(Window *me) {
   	const int16_t width = layer_get_frame(layer).size.w;// - ACTION_BAR_WIDTH - 3;
 	const int16_t height = layer_get_frame(layer).size.h;// - ACTION_BAR_WIDTH - 3;
 	
-	header_text_layer = text_layer_create(GRect(0, -4, width, height));
-  	text_layer_set_font(header_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-	text_layer_set_text_alignment(header_text_layer, GTextAlignmentCenter);
-  	text_layer_set_background_color(header_text_layer, GColorClear);
-  	text_layer_set_text(header_text_layer, HEADER_TEXT);
-  	layer_add_child(layer, text_layer_get_layer(header_text_layer));
-	
-  	body_text_layer = text_layer_create(GRect(4, 22, width - 4, height));
+  	text_layer = text_layer_create(GRect(4, -4, width - 4, height));
   	text_layer_set_font(body_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
   	text_layer_set_text_alignment(header_text_layer, GTextAlignmentCenter);
   	text_layer_set_background_color(body_text_layer, GColorClear);
